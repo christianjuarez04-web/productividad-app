@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Talenters</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{--acc:#FF6B2B;--q1:#FF3B30;--q2:#34C759;--q3:#FF9500;--q4:#8E8E93;}
+body{background:#f5f5f7;color:#1c1c1e;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+#top-bar{height:54px;background:#fff;border-bottom:1px solid #e5e5ea;display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;}
+.logo-box{width:32px;height:32px;background:var(--acc);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;}
+#bot-nav{height:58px;background:#fff;border-top:1px solid #e5e5ea;display:flex;flex-shrink:0;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:none;background:none;cursor:pointer;color:#aeaeb2;font-size:9px;font-weight:700;padding:4px 0;}
+.nb.on{color:var(--acc);}
+.nb-ic{font-size:18px;line-height:1;}
+#pages{flex:1;overflow-y:auto;overflow-x:hidden;}
+.pg{display:none;padding:12px 12px 68px;}
+.pg.on{display:block;}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 1px 8px rgba(0,0,0,.07);margin-bottom:10px;}
+.sec{font-size:11px;font-weight:700;color:#6c6c70;text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;}
+.mrow{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;}
+.mrow::-webkit-scrollbar{display:none;}
+.mc{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 1px 8px rgba(0,0,0,.07);flex-shrink:0;min-width:108px;text-align:center;}
+.mc.h{background:linear-gradient(135deg,#FF6B2B,#FF8C5A);min-width:138px;}
+.mv{font-size:26px;font-weight:800;line-height:1;}
+.mc.h .mv{color:#fff;}
+.ml{font-size:10px;font-weight:500;margin-top:3px;color:#6c6c70;}
+.mc.h .ml{color:rgba(255,255,255,.8);}
+.tghd{font-size:10px;font-weight:800;color:#fff;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:6px;}
+.ti{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:6px;box-shadow:0 1px 6px rgba(0,0,0,.06);display:flex;align-items:center;gap:8px;}
+.ti.done{opacity:.4;}
+.ti.done .tn{text-decoration:line-through;}
+.tck{width:24px;height:24px;border-radius:50%;border:2px solid #e5e5ea;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;background:none;}
+.tck.on{background:var(--q2);border-color:var(--q2);color:#fff;}
+.tn{flex:1;font-size:13px;font-weight:500;min-width:0;word-break:break-word;}
+.tbadge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0;color:#fff;}
+.ttinp{width:40px;font-size:11px;border:1px solid #e5e5ea;background:#f5f5f7;border-radius:5px;padding:2px 4px;text-align:center;color:#1c1c1e;}
+.tdel{background:#FF3B30;color:#fff;border:none;border-radius:5px;padding:4px 7px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.empty{text-align:center;padding:40px 16px;color:#6c6c70;font-size:13px;line-height:1.9;}
+#fab{position:fixed;right:14px;bottom:68px;width:50px;height:50px;border-radius:50%;background:var(--acc);color:#fff;font-size:24px;border:none;cursor:pointer;box-shadow:0 3px 14px rgba(255,107,43,.5);display:flex;align-items:center;justify-content:center;z-index:10;}
+#sov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;}
+#sht{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:18px 18px 0 0;padding:16px 16px 38px;z-index:21;display:none;max-height:88vh;overflow-y:auto;}
+.shdl{width:32px;height:4px;background:#e5e5ea;border-radius:2px;margin:0 auto 14px;}
+.fg{margin-bottom:12px;}
+.fl{font-size:11px;font-weight:600;color:#6c6c70;margin-bottom:5px;display:block;}
+.fi{width:100%;padding:11px 13px;border:1.5px solid #e5e5ea;border-radius:9px;font-size:14px;background:#f5f5f7;color:#1c1c1e;outline:none;}
+.fi:focus{border-color:var(--acc);}
+.qg{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.qo{padding:9px;border-radius:9px;border:2px solid #e5e5ea;cursor:pointer;text-align:center;}
+.qo.on{color:#fff;border-color:transparent;}
+.qo .ql{font-size:11px;font-weight:800;}
+.qo .qd{font-size:9px;margin-top:2px;opacity:.85;}
+.lg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.lo{padding:7px 3px;border-radius:8px;border:1.5px solid #e5e5ea;text-align:center;cursor:pointer;font-size:9px;font-weight:700;color:#6c6c70;}
+.lo.on{background:var(--acc);border-color:var(--acc);color:#fff;}
+.btnp{width:100%;padding:13px;background:var(--acc);color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;}
+.btns{padding:9px 14px;background:#f5f5f7;color:#1c1c1e;border:1px solid #e5e5ea;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;}
+#eis-wrap{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:7px;height:calc(100vh - 112px - 50px);}
+.qq{border-radius:13px;padding:9px;overflow-y:auto;}
+.qq.q1{background:rgba(255,59,48,.1);border:1.5px solid rgba(255,59,48,.25);}
+.qq.q2{background:rgba(52,199,89,.1);border:1.5px solid rgba(52,199,89,.25);}
+.qq.q3{background:rgba(255,149,0,.1);border:1.5px solid rgba(255,149,0,.25);}
+.qq.q4{background:rgba(142,142,147,.1);border:1.5px solid rgba(142,142,147,.2);}
+.qqt{font-size:8px;font-weight:800;letter-spacing:.3px;margin-bottom:5px;line-height:1.3;}
+.qq.q1 .qqt{color:var(--q1)}.qq.q2 .qqt{color:var(--q2)}.qq.q3 .qqt{color:var(--q3)}.qq.q4 .qqt{color:var(--q4)}
+.qchip{background:#fff;border-radius:5px;padding:4px 7px;font-size:10px;margin-bottom:3px;display:flex;align-items:center;gap:4px;cursor:pointer;}
+.qchip.done{opacity:.4;text-decoration:line-through;}
+.aqbtn{width:100%;margin-top:3px;padding:5px;border-radius:5px;border:1.5px dashed currentColor;background:none;font-size:9px;font-weight:700;cursor:pointer;}
+.qq.q1 .aqbtn{color:var(--q1)}.qq.q2 .aqbtn{color:var(--q2)}.qq.q3 .aqbtn{color:var(--q3)}.qq.q4 .aqbtn{color:var(--q4)}
+.wnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.wnav button{width:32px;height:32px;border-radius:50%;border:1px solid #e5e5ea;background:#fff;cursor:pointer;font-size:14px;color:#1c1c1e;}
+.dtabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:5px;margin-bottom:10px;}
+.dtab{flex-shrink:0;padding:6px 13px;border-radius:20px;border:none;background:#f5f5f7;color:#6c6c70;font-size:11px;font-weight:700;cursor:pointer;}
+.dtab.on{background:var(--acc);color:#fff;}
+.tcell{flex:1;border-radius:7px;border:1px solid #e5e5ea;background:#fff;padding:5px 9px;font-size:11px;color:#1c1c1e;resize:none;outline:none;min-height:38px;}
+.tcell:focus{border-color:var(--acc);}
+.srow{background:#fff;border-radius:9px;padding:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.sbg{height:5px;background:#f5f5f7;border-radius:3px;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:#f5f5f7;outline:none;margin-bottom:3px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--acc);cursor:pointer;}
+.hmap{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;}
+.hmwk{display:flex;flex-direction:column;gap:2px;}
+.hmc{aspect-ratio:1;border-radius:2px;background:#f0f0f5;}
+.orow{background:#f5f5f7;border-radius:9px;padding:12px;margin-bottom:7px;}
+.obg{height:5px;background:#e5e5ea;border-radius:3px;overflow:hidden;margin-bottom:5px;}
+.care-btn{padding:10px 7px;border:none;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;line-height:1.4;}
+#ob{position:fixed;inset:0;background:linear-gradient(160deg,#1a1a2e,#0f3460);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 108px;text-align:center;color:#fff;z-index:100;overflow:hidden;}
+#ob-track{display:flex;width:400%;transition:transform .35s ease;align-self:stretch;}
+.obs{width:25%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;}
+.ob-inp{width:100%;max-width:310px;padding:12px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.09);color:#fff;font-size:14px;outline:none;margin-bottom:8px;font-family:inherit;}
+.ob-inp::placeholder{color:rgba(255,255,255,.35);}
+.ob-sel{width:100%;max-width:310px;padding:12px 14px;border-radius:11px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.09);color:#fff;font-size:13px;outline:none;margin-bottom:8px;font-family:inherit;appearance:none;}
+.ob-sel option{background:#1a1a2e;}
+#ob-foot{position:absolute;bottom:0;left:0;right:0;padding:12px 24px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.dots{display:flex;gap:5px;}
+.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.25);transition:all .3s;}
+.dot.on{width:18px;background:var(--acc);}
+#ob-btn{width:100%;max-width:310px;padding:13px;border-radius:12px;background:var(--acc);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
+#ob-skip{font-size:12px;color:rgba(255,255,255,.38);cursor:pointer;background:none;border:none;font-family:inherit;}
+#pw{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;display:none;align-items:flex-end;}
+.pws{background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 40px;width:100%;max-height:88vh;overflow-y:auto;}
+.footer{font-size:10px;color:#aeaeb2;text-align:center;padding:14px 0 2px;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="ob">
+  <div id="ob-track">
+    <div class="obs">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#FF6B2B;background:rgba(255,107,43,.18);border:1px solid rgba(255,107,43,.4);padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase">Talenters · 2025</div>
+      <div style="font-size:56px;margin-bottom:16px;">🎯</div>
+      <div style="font-size:23px;font-weight:800;line-height:1.25;margin-bottom:10px;">Tu sistema de productividad con propósito</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;max-width:290px;">Para líderes que quieren rendir más sin sacrificar lo que más importa.</div>
+      <div style="margin-top:18px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.09);border-radius:40px;padding:7px 14px 7px 7px;">
+        <div style="width:34px;height:34px;border-radius:50%;background:#FF6B2B;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;">CJ</div>
+        <div style="text-align:left;"><div style="font-size:12px;font-weight:700;">Psi. Christian Juárez</div><div style="font-size:10px;color:rgba(255,255,255,.5);">Gestor de Talento · talenters.com.mx</div></div>
+      </div>
+    </div>
+    <div class="obs">
+      <div style="font-size:56px;margin-bottom:16px;">🌳</div>
+      <div style="font-size:23px;font-weight:800;line-height:1.25;margin-bottom:10px;">Tu productividad construye un bosque</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;max-width:290px;">Cada día productivo planta un árbol. Cuídalo, hazlo crecer. Si baja tu rendimiento, el bosque se marchita.</div>
+    </div>
+    <div class="obs">
+      <div style="font-size:56px;margin-bottom:16px;">📊</div>
+      <div style="font-size:23px;font-weight:800;line-height:1.25;margin-bottom:10px;">5 módulos + tu bosque</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.65);line-height:1.8;max-width:290px;text-align:left;">📋 Hoy · 📅 Semana · ⬛ Eisenhower<br>🌿 Mi Vida · 📈 Progreso · 🌳 Bosque</div>
+    </div>
+    <div class="obs" style="justify-content:flex-start;padding-top:16px;">
+      <div style="font-size:44px;margin-bottom:12px;">✨</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:6px;">Cuéntanos sobre ti</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:14px;">Para personalizar tu experiencia.</div>
+      <input class="ob-inp" id="ob-name" placeholder="Tu nombre completo" maxlength="40">
+      <input class="ob-inp" id="ob-role" placeholder="Tu rol (ej: Gerente, Coach)" maxlength="50">
+      <input class="ob-inp" id="ob-goal" placeholder="Tu meta principal este año" maxlength="80">
+      <select class="ob-sel" id="ob-sec"><option value="">Tu sector</option><option>Consultoría / Coaching</option><option>Recursos Humanos</option><option>Manufactura</option><option>Educación</option><option>Tecnología</option><option>Ventas</option><option>Emprendimiento</option><option>Otro</option></select>
+    </div>
+  </div>
+  <div id="ob-foot">
+    <div class="dots"><div class="dot on" id="d0"></div><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div></div>
+    <button id="ob-btn">Comenzar →</button>
+    <button id="ob-skip">Omitir introducción</button>
+  </div>
+</div>
+
+<!-- PAYWALL -->
+<div id="pw">
+  <div class="pws">
+    <div style="font-size:42px;text-align:center;margin-bottom:10px;">👑</div>
+    <div style="font-size:20px;font-weight:800;text-align:center;margin-bottom:5px;">Acceso Completo</div>
+    <div style="font-size:13px;color:#6c6c70;text-align:center;margin-bottom:16px;line-height:1.6;">Desbloquea todas las herramientas del sistema Talenters de por vida.</div>
+    <div style="text-align:center;margin-bottom:16px;"><div style="font-size:38px;font-weight:900;color:#FF6B2B;">$497</div><div style="font-size:12px;color:#6c6c70;">pago único · acceso forever · MXN</div></div>
+    <div style="margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:6px 0;border-bottom:1px solid #f0f0f5;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(52,199,89,.15);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Los 5 módulos completos + Bosque</div>
+      <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:6px 0;border-bottom:1px solid #f0f0f5;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(52,199,89,.15);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Gamificación con bosque interactivo</div>
+      <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:6px 0;border-bottom:1px solid #f0f0f5;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(52,199,89,.15);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Historial, radar de vida, S.T.O.P.</div>
+      <div style="display:flex;align-items:center;gap:9px;font-size:13px;padding:6px 0;"><div style="width:20px;height:20px;border-radius:50%;background:rgba(52,199,89,.15);color:#34C759;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Acceso a futuras actualizaciones</div>
+    </div>
+    <button id="pw-buy" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF6B2B,#FF8C5A);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:8px;font-family:inherit;">Obtener acceso ahora →</button>
+    <button id="pw-skip" style="width:100%;padding:10px;background:none;border:none;color:#6c6c70;font-size:12px;cursor:pointer;font-family:inherit;">Explorar primero</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="top-bar">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="logo-box">T</div>
+    <div><div style="font-size:14px;font-weight:800;">Talenters</div><div style="font-size:8px;color:#aeaeb2;">Productividad & Enfoque</div></div>
+  </div>
+  <div style="font-size:10px;font-weight:600;color:#6c6c70;background:#f0f0f5;border-radius:20px;padding:3px 10px;" id="hdr-date"></div>
+</div>
+
+<div id="pages">
+
+  <!-- HOY -->
+  <div class="pg on" id="pg-hoy">
+    <div id="pstrip" style="display:none;background:rgba(255,107,43,.07);border:1px solid rgba(255,107,43,.15);border-radius:14px;padding:10px 14px;margin-bottom:12px;align-items:center;gap:10px;">
+      <div id="p-av" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF6B2B,#FF8C5A);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;"></div>
+      <div><div id="p-nm" style="font-size:14px;font-weight:700;"></div><div id="p-gl" style="font-size:11px;color:#6c6c70;margin-top:1px;"></div></div>
+    </div>
+    <div class="mrow">
+      <div class="mc h"><div class="mv" id="m-score">--</div><div class="ml">Score del día</div></div>
+      <div class="mc"><div class="mv" style="font-size:20px" id="m-tasks">0/0</div><div class="ml">Tareas</div></div>
+      <div class="mc"><div class="mv" style="font-size:20px" id="m-efic">0%</div><div class="ml">Eficacia</div></div>
+      <div class="mc"><div class="mv" style="font-size:20px" id="m-q2">0%</div><div class="ml">Ratio Q2</div></div>
+    </div>
+    <div id="task-list"></div>
+    <div class="footer">Talenters · talenters.com.mx · +52 33 3406 1375 · Psi. Christian Juárez</div>
+  </div>
+
+  <!-- SEMANA -->
+  <div class="pg" id="pg-semana">
+    <div class="wnav"><button id="w-prev">←</button><div style="font-size:13px;font-weight:700;" id="w-tit"></div><button id="w-next">→</button></div>
+    <div class="card">
+      <div class="sec">🎯 Top 3 intenciones</div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;"><span style="font-size:16px;font-weight:900;color:#FF6B2B;width:18px;">1</span><input class="fi" id="int1" placeholder="Intención principal..."></div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;"><span style="font-size:16px;font-weight:900;color:#FF6B2B;width:18px;">2</span><input class="fi" id="int2" placeholder="Segunda intención..."></div>
+      <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:16px;font-weight:900;color:#FF6B2B;width:18px;">3</span><input class="fi" id="int3" placeholder="Tercera intención..."></div>
+    </div>
+    <div class="dtabs" id="dtabs"></div>
+    <div style="display:flex;flex-direction:column;gap:3px;" id="tgrid"></div>
+    <div class="footer">Talenters · talenters.com.mx · Psi. Christian Juárez</div>
+  </div>
+
+  <!-- EISENHOWER -->
+  <div class="pg" id="pg-eis">
+    <div id="eis-wrap">
+      <div class="qq q1"><div class="qqt">Q1 · HACER YA<br>Importante+Urgente</div><div id="eq1"></div><button class="aqbtn" data-eq="A">+ Agregar</button></div>
+      <div class="qq q2"><div class="qqt">Q2★ PLANIFICAR<br>Importante+No urgente</div><div id="eq2"></div><button class="aqbtn" data-eq="B">+ Agregar</button></div>
+      <div class="qq q3"><div class="qqt">Q3 · DELEGAR<br>No imp+Urgente</div><div id="eq3"></div><button class="aqbtn" data-eq="C">+ Agregar</button></div>
+      <div class="qq q4"><div class="qqt">Q4 · ELIMINAR<br>No imp+No urgente</div><div id="eq4"></div><button class="aqbtn" data-eq="D">+ Agregar</button></div>
+    </div>
+    <div style="font-size:10px;color:#6c6c70;text-align:center;padding:6px;font-style:italic;line-height:1.5;">"Quien aprende a vivir en Q2 deja de apagar incendios y empieza a construir su transformación." — Cal Newport</div>
+  </div>
+
+  <!-- MI VIDA -->
+  <div class="pg" id="pg-vida">
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div><div class="sec" style="margin-bottom:1px;">Satisfacción global</div><div style="font-size:10px;color:#6c6c70;">7 rebanadas · Matthew Kelly</div></div>
+      <div style="font-size:38px;font-weight:900;color:#FF6B2B;" id="vida-g">--</div>
+    </div>
+    <div id="slices"></div>
+    <div class="card"><div style="font-size:12px;font-weight:700;margin-bottom:7px;">Radar de Vida</div><canvas id="radar-c" height="210"></canvas></div>
+    <div class="card">
+      <div class="sec">🛑 S.T.O.P.</div>
+      <div style="font-size:10px;color:#6c6c70;margin-bottom:10px;">W. Timothy Gallwey</div>
+      <div style="margin-bottom:9px;"><div style="font-size:11px;font-weight:800;color:#FF6B2B;margin-bottom:2px;">S — Step Back</div><textarea class="fi" id="ss" placeholder="¿Qué observo esta semana?" style="min-height:60px;resize:none;"></textarea></div>
+      <div style="margin-bottom:9px;"><div style="font-size:11px;font-weight:800;color:#FF6B2B;margin-bottom:2px;">T — Think</div><textarea class="fi" id="st" placeholder="¿Qué pienso al respecto?" style="min-height:60px;resize:none;"></textarea></div>
+      <div style="margin-bottom:9px;"><div style="font-size:11px;font-weight:800;color:#FF6B2B;margin-bottom:2px;">O — Organize</div><textarea class="fi" id="so" placeholder="¿Qué opciones tengo?" style="min-height:60px;resize:none;"></textarea></div>
+      <div><div style="font-size:11px;font-weight:800;color:#FF6B2B;margin-bottom:2px;">P — Proceed</div><textarea class="fi" id="sp" placeholder="¿Cuál es mi siguiente paso?" style="min-height:60px;resize:none;"></textarea></div>
+    </div>
+    <div class="footer">Talenters · talenters.com.mx · Psi. Christian Juárez</div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="pg" id="pg-progreso">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;">📈 Score semanal</div>
+        <div id="tr-badge" style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(52,199,89,.15);color:#34C759;"></div>
+      </div>
+      <canvas id="score-c" height="130"></canvas>
+    </div>
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:7px;">🔥 Actividad — 12 semanas</div><div class="hmap" id="hmap"></div></div>
+    <div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:7px;">🌿 Tendencia de vida</div><canvas id="vida-c" height="130"></canvas></div>
+    <div class="card">
+      <div class="sec">🎯 Mis objetivos</div>
+      <div id="obj-list"></div>
+      <div id="obj-form" style="display:none;background:#f5f5f7;border-radius:9px;padding:12px;margin-top:8px;">
+        <input class="fi" id="obj-nm" placeholder="Nombre del objetivo" style="margin-bottom:7px;">
+        <input class="fi" id="obj-mt" placeholder="Meta medible (ej: 3 clientes)" style="margin-bottom:7px;">
+        <input class="fi" id="obj-mx" type="number" placeholder="Valor máximo (ej: 100)" style="margin-bottom:10px;">
+        <div style="display:flex;gap:7px;">
+          <button id="obj-save" style="flex:1;padding:9px;background:#FF6B2B;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Guardar</button>
+          <button id="obj-cancel" style="flex:1;padding:9px;background:#e5e5ea;color:#1c1c1e;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Cancelar</button>
+        </div>
+      </div>
+      <button id="add-obj" style="width:100%;margin-top:8px;padding:9px;background:#f0f0f5;color:#1c1c1e;border:1px solid #e5e5ea;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">+ Agregar objetivo</button>
+    </div>
+    <div id="exp-result" style="display:none;background:#f0f0f5;border-radius:9px;padding:12px;margin-bottom:8px;font-size:11px;color:#1c1c1e;white-space:pre-wrap;word-break:break-word;line-height:1.6;"></div>
+    <button id="exp-btn" style="width:100%;padding:12px;background:#f0f0f5;color:#1c1c1e;border:1px solid #e5e5ea;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:4px;">📋 Exportar resumen de la semana</button>
+    <div class="footer">Talenters · talenters.com.mx · +52 33 3406 1375 · Psi. Christian Juárez</div>
+  </div>
+
+  <!-- BOSQUE -->
+  <div class="pg" id="pg-bosque">
+    <div style="text-align:center;margin-bottom:8px;">
+      <div style="font-size:11px;font-weight:700;color:#6c6c70;text-transform:uppercase;letter-spacing:.7px;">Tu Bosque Talenters</div>
+      <div style="font-size:10px;color:#aeaeb2;margin-top:2px;">Tu productividad da vida a tu bosque</div>
+    </div>
+    <div class="mrow">
+      <div class="mc"><div class="mv" style="font-size:22px;color:#34C759;" id="b-trees">0</div><div class="ml">Árboles vivos</div></div>
+      <div class="mc"><div class="mv" style="font-size:22px;color:#FF6B2B;" id="b-streak">0</div><div class="ml">Racha días</div></div>
+      <div class="mc"><div class="mv" style="font-size:22px;color:#3478F6;" id="b-level">1</div><div class="ml">Nivel</div></div>
+      <div class="mc"><div class="mv" style="font-size:18px;color:#BF5AF2;" id="b-xp">0</div><div class="ml">XP</div></div>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:11px;font-weight:700;" id="b-lv-name">Semilla</div>
+        <div style="font-size:10px;color:#6c6c70;" id="b-xp-lbl">0 / 100 XP</div>
+      </div>
+      <div style="height:8px;background:#f0f0f5;border-radius:4px;overflow:hidden;">
+        <div id="b-xp-bar" style="height:100%;background:linear-gradient(90deg,#34C759,#FF6B2B);border-radius:4px;width:0%;transition:width .6s;"></div>
+      </div>
+    </div>
+    <div class="card" style="padding:10px;margin-bottom:10px;">
+      <canvas id="forest-c" style="width:100%;display:block;border-radius:8px;"></canvas>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">🌱 Cuida tu árbol activo</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+        <button class="care-btn" data-care="water" style="background:#E3F6FF;color:#007AFF;">💧 Regar<br><span style="font-size:9px;font-weight:400;">+5 XP · tareas Q2</span></button>
+        <button class="care-btn" data-care="sun" style="background:#FFF8E3;color:#FF9500;">☀️ Asolejar<br><span style="font-size:9px;font-weight:400;">+5 XP · racha activa</span></button>
+        <button class="care-btn" data-care="prune" style="background:#F0FFF4;color:#34C759;">✂️ Podar<br><span style="font-size:9px;font-weight:400;">+10 XP · sin Q4</span></button>
+        <button class="care-btn" data-care="fertilize" style="background:#F9F0FF;color:#BF5AF2;">🌿 Fertilizar<br><span style="font-size:9px;font-weight:400;">+15 XP · score ≥70</span></button>
+      </div>
+      <button id="plant-btn" style="width:100%;margin-top:10px;padding:11px;background:linear-gradient(135deg,#34C759,#2da44e);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;">🌱 Plantar árbol hoy</button>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">📜 Bitácora del bosque</div>
+      <div id="b-log" style="font-size:11px;color:#6c6c70;line-height:1.9;max-height:110px;overflow-y:auto;"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">🏅 Logros</div>
+      <div id="b-ach" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;"></div>
+    </div>
+    <div class="footer">Talenters · talenters.com.mx · Psi. Christian Juárez</div>
+  </div>
+
+</div>
+
+<div id="bot-nav">
+  <button class="nb on" data-pg="hoy"><div class="nb-ic">📋</div>Hoy</button>
+  <button class="nb" data-pg="semana"><div class="nb-ic">📅</div>Semana</button>
+  <button class="nb" data-pg="eis"><div class="nb-ic">⬛</div>Eisenhower</button>
+  <button class="nb" data-pg="vida"><div class="nb-ic">🌿</div>Mi Vida</button>
+  <button class="nb" data-pg="progreso"><div class="nb-ic">📈</div>Progreso</button>
+  <button class="nb" data-pg="bosque"><div class="nb-ic">🌳</div>Bosque</button>
+</div>
+
+<button id="fab">+</button>
+<div id="sov"></div>
+<div id="sht">
+  <div class="shdl"></div>
+  <div style="font-size:16px;font-weight:700;margin-bottom:14px;">Nueva tarea</div>
+  <div class="fg"><label class="fl">Nombre</label><input class="fi" id="t-nm" placeholder="¿Qué necesitas hacer?"></div>
+  <div class="fg">
+    <label class="fl">Cuadrante</label>
+    <div class="qg">
+      <div class="qo" data-q="A"><div class="ql">Q1 — A</div><div class="qd">Importante+Urgente</div></div>
+      <div class="qo" data-q="B"><div class="ql">Q2 — B ★</div><div class="qd">Importante+No urgente</div></div>
+      <div class="qo" data-q="C"><div class="ql">Q3 — C</div><div class="qd">No imp+Urgente</div></div>
+      <div class="qo" data-q="D"><div class="ql">Q4 — D</div><div class="qd">No imp+No urgente</div></div>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">Rebanada de vida</label>
+    <div class="lg">
+      <div class="lo" data-l="Profesional">💼 Prof.</div>
+      <div class="lo" data-l="Familiar">👨‍👩‍👧 Fam.</div>
+      <div class="lo" data-l="Intelectual">📚 Intel.</div>
+      <div class="lo" data-l="Física">💪 Fís.</div>
+      <div class="lo" data-l="Emocional">❤️ Emoc.</div>
+      <div class="lo" data-l="Espiritual">🕊️ Esp.</div>
+      <div class="lo" data-l="Personal">⭐ Pers.</div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Tiempo previsto (min)</label><input class="fi" id="t-tm" type="number" placeholder="30" min="1"></div>
+  <button class="btnp" id="do-add-task">Agregar tarea</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+var SLICES=[{key:'Profesional',icon:'💼',color:'#FF6B2B'},{key:'Familiar',icon:'👨‍👩‍👧',color:'#FF9500'},{key:'Intelectual',icon:'📚',color:'#3478F6'},{key:'Física',icon:'💪',color:'#34C759'},{key:'Emocional',icon:'❤️',color:'#FF2D55'},{key:'Espiritual',icon:'🕊️',color:'#BF5AF2'},{key:'Personal',icon:'⭐',color:'#FFD60A'}];
+var DAYS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+var HOURS=[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+var QC={A:'#FF3B30',B:'#34C759',C:'#FF9500',D:'#8E8E93'};
+var QLBL={A:'Q1 — HACER YA',B:'Q2 — PLANIFICAR ★',C:'Q3 — DELEGAR',D:'Q4 — ELIMINAR'};
+var TREE_TYPES=[{name:'Pino',emoji:'🌲',minScore:40},{name:'Palma',emoji:'🌴',minScore:60},{name:'Roble',emoji:'🌳',minScore:70},{name:'Cerezo',emoji:'🌸',minScore:82},{name:'Árbol mágico',emoji:'✨',minScore:93}];
+var XP_LEVELS=[{name:'Semilla',xp:0},{name:'Brote',xp:100},{name:'Arbusto',xp:250},{name:'Árbol joven',xp:500},{name:'Árbol adulto',xp:1000},{name:'Árbol anciano',xp:2000},{name:'Guardián del bosque',xp:5000}];
+var ACHIEVEMENTS=[
+  {id:'a1',icon:'🌱',name:'Primera semilla',desc:'Planta tu primer árbol',fn:function(f){return f.trees.length>=1;}},
+  {id:'a2',icon:'🌿',name:'Arboleda',desc:'5 árboles en el bosque',fn:function(f){return f.trees.filter(function(t){return !t.w;}).length>=5;}},
+  {id:'a3',icon:'🌲',name:'Bosque real',desc:'15 árboles plantados',fn:function(f){return f.trees.length>=15;}},
+  {id:'a4',icon:'🔥',name:'Racha semanal',desc:'7 días seguidos',fn:function(f){return f.streak>=7;}},
+  {id:'a5',icon:'💎',name:'Mes de fuego',desc:'30 días de racha',fn:function(f){return f.streak>=30;}},
+  {id:'a6',icon:'⭐',name:'Explorador',desc:'Acumula 500 XP',fn:function(f){return f.xp>=500;}},
+  {id:'a7',icon:'🌸',name:'Jardín japonés',desc:'Planta un cerezo',fn:function(f){return f.trees.some(function(t){return t.type==='Cerezo';});}},
+  {id:'a8',icon:'✨',name:'Árbol legendario',desc:'Score perfecto 93+',fn:function(f){return f.trees.some(function(t){return t.type==='Árbol mágico';});}}
+];
+
+var tasks=[], objs=[], wPlan={}, vScores={Profesional:5,Familiar:9,Intelectual:7,Física:7,Emocional:7,Espiritual:6,Personal:7};
+var stopD={s:'',t:'',o:'',p:''};
+var user={name:'',role:'',goal:''};
+var forest={trees:[],xp:0,streak:0,log:[],lastDate:''};
+var curQ='B', curLife='Profesional', wOff=0, curDay=0, obStep=0;
+var rChart=null, sChart=null, vChart=null;
+var demoScores={};
+
+[65,70,68,75,80,77,85,88].forEach(function(v,i){
+  var d=new Date(); d.setDate(d.getDate()-i*7);
+  var j=new Date(d.getFullYear(),0,4);
+  var w=Math.ceil(((d-j)/864e5+j.getDay()+1)/7);
+  demoScores[d.getFullYear()+'-W'+String(w).padStart(2,'0')]=v;
+});
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function getMon(off){var d=new Date();var dy=d.getDay();d.setDate(d.getDate()+(dy===0?-6:1-dy)+(off||0)*7);return d;}
+function fmtW(off){var m=getMon(off);var s=new Date(m);s.setDate(s.getDate()+6);var f=function(dt){return dt.toLocaleDateString('es-MX',{day:'numeric',month:'short'});};return f(m)+' – '+f(s);}
+function calcScore(){
+  if(!tasks.length) return{score:0,done:0,total:0,efic:0,q2r:0};
+  var total=tasks.length,done=tasks.filter(function(t){return t.done;}).length;
+  var q2=tasks.filter(function(t){return t.q==='B';}),q2d=q2.filter(function(t){return t.done;}).length;
+  var q2r=q2.length?q2d/q2.length:0;
+  var prevT=tasks.reduce(function(s,t){return s+t.time;},0);
+  var realT=tasks.filter(function(t){return t.done;}).reduce(function(s,t){return s+t.time;},0);
+  var efic=prevT?Math.min(realT/prevT,1):0;
+  return{score:Math.round(done/total*40+q2r*30+efic*30),done:done,total:total,efic:Math.round(efic*100),q2r:Math.round(q2r*100)};
+}
+function getAvgVida(){var vs=Object.values(vScores);return vs.length?(vs.reduce(function(a,b){return a+b;},0)/vs.length):0;}
+function getLvIdx(xp){var n=0;for(var i=0;i<XP_LEVELS.length;i++){if(xp>=XP_LEVELS[i].xp)n=i;}return n;}
+
+// ── ONBOARDING ──
+document.getElementById('ob-btn').addEventListener('click',function(){
+  if(obStep<3){obStep++;document.getElementById('ob-track').style.transform='translateX(-'+obStep*25+'%)';for(var i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('on',i===obStep);document.getElementById('ob-btn').textContent=obStep===3?'Empezar mi sistema ✓':'Siguiente →';document.getElementById('ob-skip').style.display=obStep===3?'none':'';}
+  else{finishOb();}
+});
+document.getElementById('ob-skip').addEventListener('click',finishOb);
+function finishOb(){
+  user.name=document.getElementById('ob-name').value.trim();
+  user.role=document.getElementById('ob-role').value.trim();
+  user.goal=document.getElementById('ob-goal').value.trim();
+  document.getElementById('ob').style.display='none';
+  document.getElementById('pw').style.display='flex';
+  initApp();
+}
+document.getElementById('pw-buy').addEventListener('click',function(){alert('¡Aquí irá tu pasarela de pago!\nStripe / Conekta · talenters.com.mx');document.getElementById('pw').style.display='none';});
+document.getElementById('pw-skip').addEventListener('click',function(){document.getElementById('pw').style.display='none';});
+
+// ── INIT ──
+function initApp(){
+  document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('es-MX',{day:'numeric',month:'short'});
+  renderProfile();renderHoy();renderSemana();renderEis();renderVida();renderProgreso();
+  forest.log.push('🌎 Bosque iniciado — ¡empieza a ser productivo!');
+}
+
+function renderProfile(){
+  if(!user.name)return;
+  var ini=user.name.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+  document.getElementById('pstrip').style.display='flex';
+  document.getElementById('p-av').textContent=ini;
+  document.getElementById('p-nm').textContent='Hola, '+user.name.split(' ')[0]+' 👋';
+  document.getElementById('p-gl').textContent=user.goal||user.role||'Productividad con propósito';
+}
+
+// ── NAV ──
+document.getElementById('bot-nav').addEventListener('click',function(e){
+  var nb=e.target.closest('.nb');if(!nb)return;
+  var pg=nb.dataset.pg;
+  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(n){n.classList.remove('on');});
+  document.getElementById('pg-'+pg).classList.add('on');nb.classList.add('on');
+  document.getElementById('fab').style.display=(pg==='hoy'||pg==='eis')?'flex':'none';
+  if(pg==='semana')renderSemana();
+  if(pg==='eis')renderEis();
+  if(pg==='vida')renderVida();
+  if(pg==='progreso')renderProgreso();
+  if(pg==='bosque')renderBosque();
+});
+
+// ── FAB / SHEET ──
+document.getElementById('fab').addEventListener('click',function(){openSheet(null);});
+document.getElementById('sov').addEventListener('click',closeSheet);
+function openSheet(preQ){if(preQ)curQ=preQ;document.getElementById('t-nm').value='';document.getElementById('t-tm').value='';updQSel();updLifeSel();document.getElementById('sov').style.display='block';document.getElementById('sht').style.display='block';setTimeout(function(){document.getElementById('t-nm').focus();},200);}
+function closeSheet(){document.getElementById('sov').style.display='none';document.getElementById('sht').style.display='none';}
+document.getElementById('sht').addEventListener('click',function(e){var qo=e.target.closest('.qo');if(qo){curQ=qo.dataset.q;updQSel();return;}var lo=e.target.closest('.lo');if(lo){curLife=lo.dataset.l;updLifeSel();}});
+function updQSel(){document.querySelectorAll('.qo').forEach(function(o){if(o.dataset.q===curQ){o.classList.add('on');o.style.background=QC[curQ];o.style.borderColor='transparent';o.style.color='#fff';}else{o.classList.remove('on');o.style.background='';o.style.borderColor='';o.style.color='';}});}
+function updLifeSel(){document.querySelectorAll('.lo').forEach(function(o){o.classList.toggle('on',o.dataset.l===curLife);});}
+document.getElementById('do-add-task').addEventListener('click',function(){
+  var nm=document.getElementById('t-nm').value.trim();if(!nm)return;
+  tasks.push({id:Date.now(),name:nm,q:curQ,life:curLife,time:parseInt(document.getElementById('t-tm').value)||30,done:false});
+  closeSheet();renderHoy();renderEis();
+});
+
+// ── HOY ──
+function renderHoy(){
+  var sc=calcScore();
+  document.getElementById('m-score').textContent=sc.total?sc.score:'--';
+  document.getElementById('m-tasks').textContent=sc.done+'/'+sc.total;
+  document.getElementById('m-efic').textContent=sc.efic+'%';
+  document.getElementById('m-q2').textContent=sc.q2r+'%';
+  var g={A:[],B:[],C:[],D:[]};tasks.forEach(function(t){g[t.q].push(t);});
+  var html='';
+  ['A','B','C','D'].forEach(function(q){
+    if(!g[q].length)return;
+    html+='<div style="margin-bottom:13px"><div class="tghd" style="background:'+QC[q]+'">'+QLBL[q]+'</div>';
+    g[q].forEach(function(t){
+      html+='<div class="ti'+(t.done?' done':'')+'"><button class="tck'+(t.done?' on':'')+'" data-tid="'+t.id+'" data-act="tog">'+(t.done?'✓':'')+'</button><div class="tn">'+esc(t.name)+'</div><span class="tbadge" style="background:'+QC[t.q]+'">'+t.q+'</span><input class="ttinp" type="number" value="'+t.time+'" data-tid="'+t.id+'" data-act="time"><span style="font-size:10px;color:#aeaeb2">m</span><button class="tdel" data-tid="'+t.id+'" data-act="del">🗑</button></div>';
+    });
+    html+='</div>';
+  });
+  if(!tasks.length)html='<div class="empty"><div style="font-size:36px;margin-bottom:10px">📋</div>No hay tareas hoy.<br>Toca <b>+</b> para agregar la primera.</div>';
+  document.getElementById('task-list').innerHTML=html;
+}
+document.getElementById('task-list').addEventListener('click',function(e){var el=e.target.closest('[data-act]');if(!el)return;var id=parseInt(el.dataset.tid);if(el.dataset.act==='tog'){var t=tasks.find(function(t){return t.id===id;});if(t){t.done=!t.done;renderHoy();renderEis();}}if(el.dataset.act==='del'){tasks=tasks.filter(function(t){return t.id!==id;});renderHoy();renderEis();}});
+document.getElementById('task-list').addEventListener('change',function(e){if(e.target.dataset.act==='time'){var id=parseInt(e.target.dataset.tid);var t=tasks.find(function(t){return t.id===id;});if(t){t.time=parseInt(e.target.value)||0;renderHoy();}}});
+
+// ── EISENHOWER ──
+function renderEis(){var m={A:'eq1',B:'eq2',C:'eq3',D:'eq4'};['A','B','C','D'].forEach(function(q){document.getElementById(m[q]).innerHTML=tasks.filter(function(t){return t.q===q;}).map(function(t){return '<div class="qchip'+(t.done?' done':'')+'" data-tid="'+t.id+'" data-act="tog"><span style="font-size:9px">'+(t.done?'✓':'○')+'</span><span>'+esc(t.name)+'</span></div>';}).join('');});}
+document.getElementById('eis-wrap').addEventListener('click',function(e){var chip=e.target.closest('.qchip');if(chip){var id=parseInt(chip.dataset.tid);var t=tasks.find(function(t){return t.id===id;});if(t){t.done=!t.done;renderHoy();renderEis();}return;}var aqb=e.target.closest('.aqbtn');if(aqb){openSheet(aqb.dataset.eq);}});
+
+// ── SEMANA ──
+function renderSemana(){
+  document.getElementById('w-tit').textContent=fmtW(wOff);
+  var tabs='';DAYS.forEach(function(d,i){tabs+='<button class="dtab'+(i===curDay?' on':'')+'" data-di="'+i+'">'+d+'</button>';});document.getElementById('dtabs').innerHTML=tabs;
+  var dk=DAYS[curDay],gh='';
+  HOURS.forEach(function(h){var k=dk+'_'+h,v=wPlan[k]||'';gh+='<div style="display:flex;align-items:stretch;gap:4px;min-height:38px;"><div style="font-size:9px;color:#aeaeb2;font-weight:600;width:32px;flex-shrink:0;padding-top:8px;text-align:right;">'+String(h).padStart(2,'0')+':00</div><textarea class="tcell" data-ck="'+k+'" rows="1" placeholder="...">'+esc(v)+'</textarea></div>';});
+  document.getElementById('tgrid').innerHTML=gh;
+}
+document.getElementById('dtabs').addEventListener('click',function(e){var dt=e.target.closest('.dtab');if(dt){curDay=parseInt(dt.dataset.di);renderSemana();}});
+document.getElementById('w-prev').addEventListener('click',function(){wOff--;renderSemana();});
+document.getElementById('w-next').addEventListener('click',function(){wOff++;renderSemana();});
+document.getElementById('tgrid').addEventListener('input',function(e){if(e.target.classList.contains('tcell'))wPlan[e.target.dataset.ck]=e.target.value;});
+
+// ── MI VIDA ──
+function renderVida(){
+  var html='';
+  SLICES.forEach(function(sl){var v=vScores[sl.key]||5;html+='<div class="srow"><div style="font-size:20px;width:26px;text-align:center;flex-shrink:0;">'+sl.icon+'</div><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;margin-bottom:3px;">'+sl.key+'</div><input type="range" min="1" max="10" value="'+v+'" data-sl="'+sl.key+'" style="accent-color:'+sl.color+'"><div class="sbg"><div id="sf-'+sl.key+'" style="height:5px;width:'+v*10+'%;background:'+sl.color+';border-radius:3px;transition:width .3s;"></div></div></div><div style="font-size:20px;font-weight:800;width:28px;text-align:right;flex-shrink:0;color:'+sl.color+';" id="sv-'+sl.key+'">'+v+'</div></div>';});
+  document.getElementById('slices').innerHTML=html;
+  updGlobal();
+  document.getElementById('ss').value=stopD.s;document.getElementById('st').value=stopD.t;document.getElementById('so').value=stopD.o;document.getElementById('sp').value=stopD.p;
+  renderRadar();
+}
+document.getElementById('slices').addEventListener('input',function(e){if(e.target.dataset.sl){var key=e.target.dataset.sl,val=parseInt(e.target.value);vScores[key]=val;var sf=document.getElementById('sf-'+key);if(sf)sf.style.width=val*10+'%';var sv=document.getElementById('sv-'+key);if(sv)sv.textContent=val;updGlobal();clearTimeout(e.target._rt);e.target._rt=setTimeout(renderRadar,400);}});
+document.getElementById('pg-vida').addEventListener('input',function(e){if(['ss','st','so','sp'].indexOf(e.target.id)>-1){stopD.s=document.getElementById('ss').value;stopD.t=document.getElementById('st').value;stopD.o=document.getElementById('so').value;stopD.p=document.getElementById('sp').value;}});
+function updGlobal(){var vs=Object.values(vScores);document.getElementById('vida-g').textContent=vs.length?(vs.reduce(function(a,b){return a+b;},0)/vs.length).toFixed(1):'--';}
+function renderRadar(){var canvas=document.getElementById('radar-c');if(rChart)rChart.destroy();rChart=new Chart(canvas,{type:'radar',data:{labels:SLICES.map(function(s){return s.key;}),datasets:[{label:'Mi Vida',data:SLICES.map(function(s){return vScores[s.key]||0;}),fill:true,backgroundColor:'rgba(255,107,43,.18)',borderColor:'#FF6B2B',pointBackgroundColor:'#FF6B2B',borderWidth:2},{label:'Meta',data:[8,8,8,8,8,8,8],fill:false,borderColor:'rgba(142,142,147,.4)',borderDash:[4,4],borderWidth:1,pointRadius:0}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{r:{min:0,max:10,ticks:{stepSize:2,font:{size:8}},grid:{color:'rgba(142,142,147,.15)'},pointLabels:{font:{size:9,weight:'700'}}}}}});}
+
+// ── PROGRESO ──
+function renderProgreso(){renderScoreChart();renderHmap();renderVidaChart();renderObjs();}
+function renderScoreChart(){var wks=[],scs=[];for(var i=7;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i*7);var j=new Date(d.getFullYear(),0,4);var w=Math.ceil(((d-j)/864e5+j.getDay()+1)/7);var k=d.getFullYear()+'-W'+String(w).padStart(2,'0');wks.push('S'+w);scs.push(demoScores[k]||null);}var vld=scs.filter(function(s){return s!==null;});if(vld.length>=2){var dl=vld[vld.length-1]-vld[vld.length-2];var tb=document.getElementById('tr-badge');tb.textContent=(dl>=0?'↑':'↓')+' '+Math.abs(dl)+' pts';tb.style.background=dl>=0?'rgba(52,199,89,.15)':'rgba(255,59,48,.15)';tb.style.color=dl>=0?'#34C759':'#FF3B30';}if(sChart)sChart.destroy();sChart=new Chart(document.getElementById('score-c'),{type:'line',data:{labels:wks,datasets:[{label:'Score',data:scs,fill:true,backgroundColor:'rgba(255,107,43,.12)',borderColor:'#FF6B2B',tension:.4,borderWidth:2,pointBackgroundColor:'#FF6B2B',pointRadius:4,spanGaps:true}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{font:{size:8}}},x:{grid:{display:false},ticks:{font:{size:8}}}}}});}
+function renderHmap(){var c=document.getElementById('hmap');c.innerHTML='';for(var w=11;w>=0;w--){var col=document.createElement('div');col.className='hmwk';for(var d=0;d<7;d++){var cell=document.createElement('div');cell.className='hmc';var rd=new Date();rd.setDate(rd.getDate()-(w*7+d));var j=new Date(rd.getFullYear(),0,4);var wn=Math.ceil(((rd-j)/864e5+j.getDay()+1)/7);var k=rd.getFullYear()+'-W'+String(wn).padStart(2,'0');if(demoScores[k])cell.style.background='rgba(255,107,43,'+demoScores[k]/100+')';col.appendChild(cell);}c.appendChild(col);}}
+function renderVidaChart(){var wks=[],dsets=[];for(var i=3;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i*7);var j=new Date(d.getFullYear(),0,4);var w=Math.ceil(((d-j)/864e5+j.getDay()+1)/7);wks.push('S'+w);SLICES.forEach(function(sl,idx){if(!dsets[idx])dsets[idx]={label:sl.key,data:[],borderColor:sl.color,borderWidth:1.5,tension:.4,fill:false,pointRadius:3,spanGaps:true};dsets[idx].data.push(i===0?(vScores[sl.key]||null):null);});}if(vChart)vChart.destroy();vChart=new Chart(document.getElementById('vida-c'),{type:'line',data:{labels:wks,datasets:dsets},options:{responsive:true,plugins:{legend:{display:true,labels:{font:{size:8},boxWidth:8}}},scales:{y:{min:0,max:10,ticks:{font:{size:8}}},x:{grid:{display:false},ticks:{font:{size:8}}}}}});}
+function renderObjs(){var c=document.getElementById('obj-list');if(!objs.length){c.innerHTML='<div style="text-align:center;padding:14px 0;color:#6c6c70;font-size:12px;">Agrega tu primer objetivo.</div>';return;}var stC={log:'#34C759',enc:'#3478F6',ate:'#FF9500',cri:'#FF3B30'};var stL={log:'✅ Logrado',enc:'📈 En camino',ate:'⚠️ Atención',cri:'🚨 Crítico'};var stBg={log:'rgba(52,199,89,.15)',enc:'rgba(52,120,246,.15)',ate:'rgba(255,149,0,.15)',cri:'rgba(255,59,48,.15)'};c.innerHTML=objs.map(function(o){var pct=Math.min(Math.round(o.av/o.max*100),100);var st=pct>=100?'log':pct>=70?'enc':pct>=40?'ate':'cri';return '<div class="orow"><div style="font-size:13px;font-weight:700;margin-bottom:2px;">'+esc(o.name)+'</div><div style="font-size:10px;color:#6c6c70;margin-bottom:7px;">Meta: '+esc(o.meta)+' · Avance: <input type="number" value="'+o.av+'" min="0" max="'+o.max+'" data-oid="'+o.id+'" style="width:42px;border:1px solid #e5e5ea;border-radius:4px;padding:1px 4px;background:#fff;color:#1c1c1e;font-size:10px;"> / '+o.max+'</div><div class="obg"><div style="height:100%;width:'+pct+'%;background:'+stC[st]+';border-radius:3px;transition:width .5s;"></div></div><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:9px;font-weight:700;padding:2px 9px;border-radius:10px;background:'+stBg[st]+';color:'+stC[st]+';">'+stL[st]+'</span><span style="font-size:12px;font-weight:800;color:'+stC[st]+';">'+pct+'%</span></div></div>';}).join('');}
+
+document.getElementById('obj-list').addEventListener('change',function(e){if(e.target.dataset.oid){var id=parseInt(e.target.dataset.oid);var o=objs.find(function(o){return o.id===id;});if(o){o.av=parseInt(e.target.value)||0;renderObjs();}}});
+document.getElementById('add-obj').addEventListener('click',function(){var f=document.getElementById('obj-form');f.style.display=f.style.display==='none'||f.style.display===''?'block':'none';});
+document.getElementById('obj-cancel').addEventListener('click',function(){document.getElementById('obj-form').style.display='none';});
+document.getElementById('obj-save').addEventListener('click',function(){var nm=document.getElementById('obj-nm').value.trim();var mt=document.getElementById('obj-mt').value.trim();var mx=parseInt(document.getElementById('obj-mx').value);if(!nm||!mt||!mx||isNaN(mx)){return;}objs.push({id:Date.now(),name:nm,meta:mt,av:0,max:mx});document.getElementById('obj-nm').value='';document.getElementById('obj-mt').value='';document.getElementById('obj-mx').value='';document.getElementById('obj-form').style.display='none';renderObjs();});
+document.getElementById('exp-btn').addEventListener('click',function(){var sc=calcScore();var avg=getAvgVida().toFixed(1);var txt='📊 RESUMEN SEMANAL — TALENTERS\n'+(user.name||'Usuario')+' · '+fmtW(wOff)+'\n'+'━'.repeat(26)+'\n\n';txt+='📋 PRODUCTIVIDAD\nScore: '+sc.score+'/100 | Tareas: '+sc.done+'/'+sc.total+' | Eficacia: '+sc.efic+'% | Q2: '+sc.q2r+'%\n\n';txt+='🌿 REBANADAS (Promedio: '+avg+'/10)\n';SLICES.forEach(function(s){txt+=s.icon+' '+s.key+': '+(vScores[s.key]||0)+'/10\n';});txt+='\n🌳 BOSQUE: '+forest.trees.filter(function(t){return !t.w;}).length+' árboles vivos · '+forest.xp+' XP · Racha '+forest.streak+' días\n\n';txt+='━'.repeat(26)+'\ntalenters.com.mx · Psi. Christian Juárez';var res=document.getElementById('exp-result');res.textContent=txt;res.style.display='block';document.getElementById('exp-btn').textContent='✅ Resumen generado ↑';if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){});});
+
+// ── BOSQUE ──
+function addLog(msg){var now=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});forest.log.unshift('['+now+'] '+msg);if(forest.log.length>25)forest.log.pop();}
+function gainXP(n,reason){forest.xp+=n;addLog('+'+n+' XP — '+reason);}
+
+function plantTree(){
+  var sc=calcScore();var avg=getAvgVida();
+  var score=sc.total?sc.score:0;
+  var today=new Date().toISOString().slice(0,10);
+  if(forest.lastDate===today){addLog('Ya plantaste hoy 🌙 — vuelve mañana');renderBosque();return;}
+  var ttype=null;
+  for(var i=TREE_TYPES.length-1;i>=0;i--){if(score>=TREE_TYPES[i].minScore){ttype=TREE_TYPES[i];break;}}
+  if(!ttype){addLog('Score muy bajo ('+score+') — el árbol no pudo germinar 🥀');renderBosque();return;}
+  // streak
+  var yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  if(forest.lastDate===yesterday.toISOString().slice(0,10)){forest.streak++;}
+  else if(forest.lastDate===''){forest.streak=1;}
+  else{forest.streak=1;}
+  forest.lastDate=today;
+  var health=Math.min(100,Math.round(score*0.5+avg*5));
+  forest.trees.push({id:Date.now(),type:ttype.name,emoji:ttype.emoji,health:health,score:score,planted:today,w:false});
+  gainXP(score>=85?25:score>=70?15:score>=55?10:5,'Árbol '+ttype.emoji+' '+ttype.name+' plantado');
+  addLog('🌱 Árbol '+ttype.name+' '+ttype.emoji+' plantado — Score '+score);
+  renderBosque();
+}
+
+function witherCheck(){
+  var sc=calcScore();var avg=getAvgVida();var score=sc.total?sc.score:0;
+  forest.trees.forEach(function(t){
+    if(t.w)return;
+    if(score<35||avg<3.5){t.health=Math.max(0,t.health-25);if(t.health<=0){t.w=true;addLog('🥀 '+t.type+' se marchitó — sube tu productividad');}}
+    else if(score>=65){t.health=Math.min(100,t.health+5);}
+  });
+}
+
+function renderBosque(){
+  witherCheck();
+  var living=forest.trees.filter(function(t){return !t.w;}).length;
+  document.getElementById('b-trees').textContent=living+'/'+forest.trees.length;
+  document.getElementById('b-streak').textContent=forest.streak;
+  var lvi=getLvIdx(forest.xp);
+  document.getElementById('b-level').textContent=lvi+1;
+  document.getElementById('b-xp').textContent=forest.xp;
+  var lv=XP_LEVELS[lvi],nl=XP_LEVELS[lvi+1];
+  document.getElementById('b-lv-name').textContent=lv.name;
+  var pct=nl?Math.min(100,Math.round((forest.xp-lv.xp)/(nl.xp-lv.xp)*100)):100;
+  document.getElementById('b-xp-lbl').textContent=forest.xp+' / '+(nl?nl.xp:'MAX')+' XP';
+  document.getElementById('b-xp-bar').style.width=pct+'%';
+  drawForest();
+  var logEl=document.getElementById('b-log');
+  logEl.innerHTML=forest.log.length?forest.log.map(function(l){return '<div>'+esc(l)+'</div>';}).join(''):'<div style="color:#aeaeb2">El bosque guarda silencio...</div>';
+  var achEl=document.getElementById('b-ach');
+  achEl.innerHTML=ACHIEVEMENTS.map(function(a){var ok=a.fn(forest);return '<div style="padding:9px;border-radius:9px;background:'+(ok?'#f0fff4':'#f5f5f7')+';border:1px solid '+(ok?'rgba(52,199,89,.3)':'#e5e5ea')+';text-align:center;opacity:'+(ok?1:.45)+';"><div style="font-size:19px;">'+a.icon+'</div><div style="font-size:10px;font-weight:700;margin-top:2px;color:'+(ok?'#1c1c1e':'#6c6c70')+';">'+a.name+'</div><div style="font-size:9px;color:#aeaeb2;margin-top:1px;line-height:1.3;">'+a.desc+'</div>'+(ok?'<div style="font-size:9px;color:#34C759;font-weight:700;margin-top:3px;">✓ Desbloqueado</div>':'')+'</div>';}).join('');
+}
+
+function drawForest(){
+  var canvas=document.getElementById('forest-c');
+  var W=canvas.parentElement.clientWidth-24||280;
+  var H=Math.round(W*0.52);
+  canvas.width=W;canvas.height=H;
+  var ctx=canvas.getContext('2d');
+  // sky
+  var sky=ctx.createLinearGradient(0,0,0,H*0.65);sky.addColorStop(0,'#87CEEB');sky.addColorStop(1,'#c8e6c9');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  // ground
+  var grd=ctx.createLinearGradient(0,H*0.65,0,H);grd.addColorStop(0,'#66BB6A');grd.addColorStop(1,'#388E3C');ctx.fillStyle=grd;ctx.fillRect(0,H*0.65,W,H);
+  // sun
+  ctx.beginPath();ctx.arc(W*0.88,H*0.14,H*0.1,0,Math.PI*2);ctx.fillStyle='#FFD600';ctx.fill();
+  // clouds
+  [[0.18,0.12],[0.52,0.08]].forEach(function(c){ctx.beginPath();ctx.arc(W*c[0],H*c[1],W*0.06,0,Math.PI*2);ctx.arc(W*(c[0]+0.06),H*c[1]-H*0.02,W*0.05,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.88)';ctx.fill();});
+  if(!forest.trees.length){
+    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.font='bold '+Math.round(H*0.085)+'px Inter,sans-serif';ctx.textAlign='center';ctx.fillText('Tu bosque está vacío',W/2,H*0.45);
+    ctx.font=Math.round(H*0.062)+'px Inter,sans-serif';ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillText('Planta tu primer árbol ↓',W/2,H*0.58);return;
+  }
+  var n=forest.trees.length;
+  var cols=Math.max(3,Math.ceil(Math.sqrt(n*1.8)));
+  var cw=W/cols;
+  forest.trees.forEach(function(t,i){
+    var col=i%cols,row=Math.floor(i/cols);
+    var cx=cw*(col+0.5);
+    var cy=H*0.65-row*(H*0.18)-H*0.06;
+    var sz=Math.max(12,Math.min(26,cw*0.38));
+    ctx.globalAlpha=t.w?0.28:0.9;
+    if(t.w){ctx.filter='grayscale(100%)';}
+    ctx.font=sz+'px serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+    ctx.fillText(t.emoji,cx,cy);
+    ctx.filter='none';ctx.globalAlpha=1;
+    if(!t.w){
+      var bw=sz*0.85,bh=3,bx=cx-bw/2,by=cy+1;
+      ctx.fillStyle='rgba(0,0,0,0.12)';ctx.fillRect(bx,by,bw,bh);
+      ctx.fillStyle=t.health>60?'#34C759':t.health>30?'#FF9500':'#FF3B30';
+      ctx.fillRect(bx,by,bw*t.health/100,bh);
+    }
+  });
+}
+
+document.getElementById('plant-btn').addEventListener('click',plantTree);
+document.getElementById('pg-bosque').addEventListener('click',function(e){
+  var btn=e.target.closest('.care-btn');if(!btn)return;
+  var care=btn.dataset.care;
+  var sc=calcScore();var score=sc.total?sc.score:0;
+  var living=forest.trees.filter(function(t){return !t.w;});
+  if(!living.length){addLog('No hay árboles vivos que cuidar 🌵');renderBosque();return;}
+  var active=living[living.length-1];
+  if(care==='water'){var q2d=tasks.filter(function(t){return t.q==='B'&&t.done;}).length;if(q2d>0){active.health=Math.min(100,active.health+12);gainXP(5,'Riego 💧');}else{addLog('Completa tareas Q2 primero 💧');}}
+  if(care==='sun'){if(forest.streak>=1){active.health=Math.min(100,active.health+10);gainXP(5,'Asoleado ☀️');}else{addLog('Necesitas racha activa ☀️');}}
+  if(care==='prune'){var q4=tasks.filter(function(t){return t.q==='D';}).length;if(q4===0){active.health=Math.min(100,active.health+14);gainXP(10,'Podado ✂️');}else{addLog('Elimina tareas Q4 primero ✂️');}}
+  if(care==='fertilize'){if(score>=70){active.health=Math.min(100,active.health+18);gainXP(15,'Fertilizado 🌿');}else{addLog('Necesitas score ≥70 para fertilizar (actual: '+score+') 🌿');}}
+  renderBosque();
+});
+
+});
+</script>
+</body>
+</html>
